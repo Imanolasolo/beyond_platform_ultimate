@@ -45,7 +45,7 @@ with col2:
             "icon": {"color": "orange", "font-size": "20px"}, 
             "nav-link": {
                 "font-size": "16px",
-                "font-family": "'Roboto',serif",
+                "font-family": "monospace",
                 "text-align": "left",
                 "margin":"0px",
                 "--hover-color": "#eee",
