@@ -34,7 +34,7 @@ with col1:
     st.image('assets/images/Beyond_logo.jpg', width=200)
 with col2:    
     selected = option_menu(
-        menu_title='Beyond, your growing partner',
+        menu_title='Beyond, Tu socio para crecer',  # Título del menú
         options=["Inicio", "Charlas", "Podcasts","Beyond Summit","Admin Space"],  # Opciones del menú
         icons=["house", "info-circle", "envelope"],  # Iconos para las opciones
         menu_icon="cast",  # Icono del menú
@@ -118,4 +118,52 @@ elif selected == "Admin Space":
                 st.rerun()
         
         show_admin_dashboard()
+
+# Footer
+st.markdown("""
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #7c82ce;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .footer-contact {
+        text-align: left;
+    }
+    .footer-contact h2 {
+        margin: 0 0 5px 0;
+        font-size: 16px;
+    }
+    .footer-contact p {
+        margin: 0;
+        font-size: 16px;
+    }
+    .footer-content {
+        text-align: center;
+        flex-grow: 1;
+    }
+    .footer-content p {
+        margin: 2px 0;
+        font-size: 16px;
+    }
+    </style>
+    <div class="footer">
+        <div class="footer-contact">
+            <h2>Contacto:</h2>
+            <p>📧 <a href="mailto:info@muyueducation.com">info@muyueducation.com</a></p>
+        </div>
+        <div class="footer-content">
+            <p>Transformando vidas a través de la educación innovadora</p>
+            <p>&copy; 2024 Beyond Platform - Todos los derechos reservados.</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 

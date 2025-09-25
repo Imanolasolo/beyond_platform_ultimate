@@ -25,7 +25,7 @@ def get_share_url(video_url):
     return video_url
 
 def show():
-    # Add custom CSS for tooltip
+    # Add custom CSS for tooltip and platform theme
     st.markdown("""
     <style>
     .tooltip {
@@ -69,6 +69,38 @@ def show():
         visibility: visible;
         opacity: 1;
     }
+    
+    .video-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 20px;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .video-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+    
+    .video-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .intro-section {
+        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -84,38 +116,47 @@ def show():
     
     col1, col2 = st.columns([3, 6])
     with col1: 
-        # Introductory paragraph about Beyond Platform
+        # Introductory paragraph about Beyond Platform with platform styling
         st.markdown("""
-            **Bienvenido a Beyond Platform**  
-            Beyond Platform es un espacio diseñado para inspirar, educar y conectar a las personas a través de contenido multimedia. 
-            Aquí encontrarás videos seleccionados cuidadosamente para ayudarte a crecer personal y profesionalmente.
-        """)
+            <div class="intro-section">
+                <h3>🎥 Charlas Inspiradoras</h3>
+                <p>Beyond Platform es un espacio diseñado para inspirar, educar y conectar a las personas a través de contenido multimedia.</p>
+                <p>Aquí encontrarás videos seleccionados cuidadosamente para ayudarte a crecer personal y profesionalmente.</p>
+            </div>
+        """, unsafe_allow_html=True)
     with col2:
         if main_video:
-            # Show the most liked video as main video
+            # Show the most liked video as main video with platform styling
             st.markdown(f"""
-                <div style="display: flex; justify-content: center; align-items: center;">
+                <div class="video-hero">
+                    <h3>🌟 Video Más Popular</h3>
                     <iframe width="320" height="180" 
                             src="{main_video['url'].replace('watch?v=', 'embed/')}" 
                             frameborder="0" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
+                            allowfullscreen
+                            style="border-radius: 8px;">
                     </iframe>
+                    <p style="font-style: italic; margin-top: 15px; font-size: 14px;">
+                        ❤️ {main_video['likes'] or 0} likes | 👁️ Video destacado
+                    </p>
                 </div>
-                <p style="text-align: center; margin-top: 10px; font-style: italic;">
-                    Video más popular ({main_video['likes'] or 0} likes)
-                </p>
             """, unsafe_allow_html=True)
         else:
             # Fallback to default video if no videos in database
             st.markdown("""
-                <div style="display: flex; justify-content: center; align-items: center;">
+                <div class="video-hero">
+                    <h3>🌟 Video Destacado</h3>
                     <iframe width="320" height="180" 
                             src="https://www.youtube.com/embed/ZNn2MBdliow" 
                             frameborder="0" 
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
+                            allowfullscreen
+                            style="border-radius: 8px;">
                     </iframe>
+                    <p style="font-style: italic; margin-top: 15px;">
+                        🎬 Contenido inspirador para tu crecimiento
+                    </p>
                 </div>
             """, unsafe_allow_html=True)
 
@@ -123,6 +164,8 @@ def show():
     st.markdown("---")
 
     if videos:
+        st.markdown("### 🎬 Todas las Charlas")
+        
         for i in range(0, len(videos), 3):  # Group videos in sets of 3
             group = videos[i:i+3]
             cols = st.columns(3)  # Create 3 columns for the group
@@ -145,28 +188,37 @@ def show():
                         description_html = truncated_desc
                     
                     st.markdown(f"""
-                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
-                            <iframe width="320" height="180" 
+                        <div class="video-card">
+                            <iframe width="100%" height="180" 
                                     src="{video['url'].replace('watch?v=', 'embed/')}" 
                                     frameborder="0" 
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                    allowfullscreen>
+                                    allowfullscreen
+                                    style="border-radius: 8px; margin-bottom: 10px;">
                             </iframe>
-                            <p style="margin-top: 10px; text-align: center;">{description_html}</p>
+                            <p style="margin-top: 10px; text-align: center; color: #333; font-size: 14px;">{description_html}</p>
                         </div>
                     """, unsafe_allow_html=True)
                     
-                    # Like and Share buttons
+                    # Like and Share buttons with platform styling
                     button_col1, button_col2 = st.columns(2)
                     with button_col1:
-                        if st.button(f"❤️ Like ({video['likes'] or 0})", key=f"like_{video['id']}"):
+                        if st.button(f"❤️ Like ({video['likes'] or 0})", key=f"like_{video['id']}", use_container_width=True):
                             like_video(video['id'])
                             st.rerun()
                     with button_col2:
-                        if st.button("📤 Share", key=f"share_{video['id']}"):
+                        if st.button("📤 Share", key=f"share_{video['id']}", use_container_width=True):
                             share_url = get_share_url(video['url'])
                             st.success(f"URL para compartir: {share_url}")
                             st.code(share_url)
-            st.markdown("---")  # Add a line separator between groups
+            
+            if i + 3 < len(videos):  # Add separator between groups, but not after the last group
+                st.markdown("---")
     else:
-        st.info("No hay videos disponibles.")
+        st.markdown("""
+            <div class="video-hero">
+                <h3>🎬 Próximamente</h3>
+                <p>Estamos preparando contenido increíble para ti.</p>
+                <p>¡Mantente atento a nuestros próximos lanzamientos!</p>
+            </div>
+        """, unsafe_allow_html=True)
