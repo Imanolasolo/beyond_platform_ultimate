@@ -41,11 +41,10 @@ from dashboards.videos_dashboard import show as show_videos_dashboard
 from dashboards.podcasts_dashboard import show as show_podcasts_dashboard
 from dashboards.admin_dashboard import show as show_admin_dashboard
 from dashboards.beyond_summit_dashboard import show as show_beyond_summit_dashboard 
-
+from dashboards.init_dashboard import show as show_init_dashboard
 # Mostrar el dashboard correspondiente según la opción seleccionada
 if selected == "Inicio":
-    st.title("Bienvenido a Beyond Platform")
-    st.write("Explora nuestras charlas y podcasts para inspirarte y aprender.") 
+    show_init_dashboard()
 elif selected == "Charlas":
     show_videos_dashboard()    
 elif selected == "Podcasts":
