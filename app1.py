@@ -30,31 +30,49 @@ st.set_page_config(
 
 # Crear una barra de navegación superior CON LOGO
 
+# Inyectar Roboto Condensed desde Google Fonts y aplicarlo al menú
+st.markdown('''
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <style>
+    .roboto-expanded * {
+        font-family: 'Roboto Condensed', Arial, sans-serif !important;
+        letter-spacing: 0.04em;
+        font-stretch: expanded;
+    }
+    </style>
+''', unsafe_allow_html=True)
+
 col1, col2 = st.columns([1, 6])
 with col1:
     st.image('assets/images/Beyond_logo.jpg', width=200)
 with col2:
-    selected = option_menu(
-        menu_title=None,  # Sin título del menú
-        options=["Inicio", "Charlas", "Podcasts", "Beyond Summit", "Iniciar sesión"],  # Opciones del menú
-        # icons eliminado para quitar iconos
-        menu_icon=" ",  # Sin icono de menú ni flecha
-        default_index=0,  # Opción seleccionada por defecto
-        orientation="horizontal",  # Menú horizontal
-        styles={
-            "container": {"padding": "0!important", "background-color": "transparent"},
-            # "icon": {"color": "orange", "font-size": "20px"},
-            "nav-link": {
-                "font-size": "16px",
-                "font-family": "monospace",
-                "text-align": "left",
-                "margin": "0px",
-                "color": "black",
-                "--hover-color": "#eee",
-            },
-            "nav-link-selected": {"background-color": "#7c82ce"},
-        }
-    )
+    with st.container():
+        st.markdown('<div class="roboto-expanded">', unsafe_allow_html=True)
+        selected = option_menu(
+            menu_title=None,  # Sin título del menú
+            options=["INICIO", "CHARLAS", "PODCASTS", "BEYOND SUMMIT", "INICIAR SESIÓN"],  # Opciones del menú
+            # icons eliminado para quitar iconos
+            menu_icon=" ",  # Sin icono de menú ni flecha
+            default_index=0,  # Opción seleccionada por defecto
+            orientation="horizontal",  # Menú horizontal
+            styles={
+                "container": {"padding": "0!important", "background-color": "transparent"},
+                # "icon": {"color": "orange", "font-size": "20px"},
+                "nav-link": {
+                    "font-size": "16px",
+                    "font-family": "'Roboto Condensed', Arial, sans-serif",
+                    "text-align": "left",
+                    "margin": "0px",
+                    "color": "black",
+                    "--hover-color": "#eee",
+                    "font-stretch": "expanded",
+                    "letter-spacing": "0.04em",
+                    "font-weight": "700",
+                },
+                "nav-link-selected": {"background-color": "#7c82ce"},
+            }
+        )
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # Importar los dashboards
 from dashboards.videos_dashboard import show as show_videos_dashboard
@@ -68,15 +86,15 @@ if selected != "Iniciar sesión" and "admin_logged_in" in st.session_state:
     del st.session_state.admin_logged_in
 
 # Mostrar el dashboard correspondiente según la opción seleccionada
-if selected == "Inicio":
+if selected == "INICIO":
     show_init_dashboard()
-elif selected == "Charlas":
+elif selected == "CHARLAS":
     show_videos_dashboard()    
-elif selected == "Podcasts":
+elif selected == "PODCASTS":
     show_podcasts_dashboard()
-elif selected == "Beyond Summit":
+elif selected == "BEYOND SUMMIT":
     show_beyond_summit_dashboard()
-elif selected == "Iniciar sesión":
+elif selected == "INICIAR SESIÓN":
     # Always require login for Iniciar sesión
     if "admin_logged_in" not in st.session_state or not st.session_state.admin_logged_in:
         st.title("🔐 Admin Login")

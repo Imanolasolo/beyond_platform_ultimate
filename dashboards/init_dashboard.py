@@ -1,4 +1,3 @@
-import streamlit as st
 import sqlite3
 
 DB_NAME = "db/beyond_platform.db"
@@ -9,7 +8,6 @@ def get_db():
     return conn
 
 def get_top_videos(limit=4):
-    """Obtiene los videos más votados"""
     conn = get_db()
     c = conn.cursor()
     c.execute("SELECT * FROM videos ORDER BY likes DESC LIMIT ?", (limit,))
@@ -18,431 +16,234 @@ def get_top_videos(limit=4):
     return videos
 
 def get_top_podcasts(limit=4):
-    """Obtiene los podcasts más votados"""
     conn = get_db()
     c = conn.cursor()
-    try:
-        c.execute("SELECT * FROM podcasts ORDER BY likes DESC LIMIT ?", (limit,))
-        podcasts = c.fetchall()
-    except sqlite3.OperationalError:
-        # Si no existe la tabla o columna likes, devolver lista vacía
-        podcasts = []
+    c.execute("SELECT * FROM podcasts ORDER BY id DESC LIMIT ?", (limit,))
+    podcasts = c.fetchall()
     conn.close()
     return podcasts
 
+import streamlit as st
+import os
+import base64
+
 def show():
-    # Custom CSS for styling
-    st.markdown("""
+
+    local_img = "assets/images/image1.jpg"
+    if os.path.exists(local_img):
+        with open(local_img, "rb") as img_file:
+            img_base64 = base64.b64encode(img_file.read()).decode()
+        img_src = f"data:image/jpeg;base64,{img_base64}"
+    else:
+        img_src = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+
+    # Título dentro de la caja gris
+    titulo_html = """
+    <span style='font-size:25px; font-weight:bold; color:#7c82ce; text-align:center; font-family:Roboto Condensed,Arial,sans-serif; margin-bottom:18px; display:block;'>¿QUÉ ES BEYOND PLATFORM?</span>
+    """
+    # Obtener los 4 videos más votados
+    videos = get_top_videos(4)
+
+    # Mostrar los 4 podcasts más recientes como videos de YouTube
+    podcasts = get_top_podcasts(4)
+
+    # HERO FIJO: mostrar siempre el video solicitado
+    hero_iframe = '<iframe src="https://www.youtube.com/embed/qizz5T8Zc48" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%; height:100%; border:none; background:#000;"></iframe>'
+
+    st.markdown(f"""
     <style>
-    .welcome-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 30px;
-        border-radius: 15px;
-        color: white;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    
-    .info-button {
-        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 10px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        width: 100%;
-        font-size: 16px;
-        font-weight: bold;
-    }
-    
-    .info-button:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        background: linear-gradient(135deg, #ff5722 0%, #00bcd4 100%);
-    }
-    
-    .info-content {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 15px 0;
-        border-left: 4px solid #667eea;
-        display: none;
-    }
-    
-    .info-content.active {
-        display: block;
-        animation: fadeIn 0.5s ease-in;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .stButton > button {
-        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%) !important;
-        color: white !important;
-        border: none !important;
-        border-radius: 12px !important;
-        padding: 15px 20px !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
-        font-weight: bold !important;
-        width: 100% !important;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-3px) !important;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.2) !important;
-        background: linear-gradient(135deg, #ff5722 0%, #00bcd4 100%) !important;
-    }
-    
-    /* Eliminar espacios entre columnas para video e imagen */
-    .video-image-container [data-testid="column"] {
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-    
-    .video-image-container {
-        padding: 0 !important;
-        margin: 0 !important;
-        width: 100% !important;
-    }
-    
-    /* Ajustar tamaño del video para que coincida con la imagen */
-    .video-image-container iframe {
-        width: 100% !important;
-        height: 400px !important;
-        border-radius: 8px;
-    }
-    
-    .video-image-container img {
-        width: 100% !important;
-        height: 500px !important;
-        object-fit: cover !important;
-        border-radius: 8px;
-    }
-    
-    /* Caja gris de texto */
-    .info-box {
-        background-color: #f0f2f6;
-        padding: 30px;
-        border-radius: 10px;
-        margin: 20px 0;
-    }
-    
-    .info-title {
-        font-size: 24px;
+    .beyond-title-hero {{
+        font-size: 40px;
         font-weight: bold;
         color: #7c82ce;
-        margin-bottom: 15px;
-    }
-    
-    .info-text {
-        font-size: 16px;
-        color: #555;
+        text-align: center;
+        margin-bottom: 0px;
+        margin-top: 24px;
+        letter-spacing: 0.01em;
+        font-family: 'Roboto Condensed', Arial, sans-serif;
+    }}
+    .fullwidth-row {{
+        width: 100vw;
+        min-width: 100vw;
+        max-width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        gap: 0;
+        background: transparent;
+    }}
+    .fullwidth-row > div {{
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0;
+        margin: 0;
+    }}
+    .fullwidth-row iframe, .fullwidth-row img {{
+        display: block;
+        width: 100%;
+        height: 60vh;
+        max-height: 90vh;
+        border-radius: 0;
+        margin: 0;
+        padding: 0;
+        object-fit: cover;
+    }}
+    @media (max-width: 900px) {{
+        .fullwidth-row iframe, .fullwidth-row img {{
+            height: 40vh;
+        }}
+    }}
+    @media (max-width: 600px) {{
+        .fullwidth-row {{
+            flex-direction: column;
+        }}
+        .fullwidth-row iframe, .fullwidth-row img {{
+            height: 30vh;
+        }}
+    }}
+    .info-box-below-hero {{
+        width: 100vw;
+        min-width: 100vw;
+        max-width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        background: #f4f5fa;
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+    }}
+    .info-box-below-hero > div {{
+        flex: 1 1 0;
+        padding: 32px 40px 32px 40px;
+        font-size: 1.15rem;
+        color: #444;
         line-height: 1.6;
-    }
-    
-    /* Sección de charlas */
-    .charlas-section {
-        margin: 40px 0;
-    }
-    
-    .charlas-title {
-        font-size: 32px;
-        font-weight: bold;
-        color: #333;
-        text-align: left;
-        margin-bottom: 30px;
-        text-decoration: underline;
-        text-underline-offset: 8px;
-    }
-    
-    .video-thumbnail {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
-        margin-bottom: 15px;
-    }
-    
-    .video-thumbnail:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    }
-    
-    .video-title {
-        font-size: 14px;
-        font-weight: bold;
-        color: #333;
-        margin-top: 10px;
+        background: none;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }}
+    .info-box-below-hero > div:first-child {{
+        align-items: center;
+        flex-basis: 40%;
+        max-width: 40%;
+    }}
+    .info-box-below-hero > div:last-child {{
+        align-items: center;
+        justify-content: center;
+        flex-basis: 60%;
+        max-width: 60%;
         text-align: center;
-        line-height: 1.3;
+    }}
+    @media (max-width: 900px) {{
+        .info-box-below-hero {{
+            flex-direction: column;
+        }}
+        .info-box-below-hero > div {{
+            padding: 18px 10px 18px 10px;
+            flex-basis: 100%;
+            max-width: 100%;
+            align-items: center !important;
+        }}
+    }}
+    @media (max-width: 900px) {{
+        .info-box-below-hero > div {{
+            padding: 18px 10px 18px 10px;
+        }}
+    }}
+    </style>
+    <div class="fullwidth-row">
+        <div>
+            {hero_iframe}
+        </div>
+        <div>
+            <img src="{img_src}" alt="Imagen principal" style="width:100%; height:100%; object-fit:cover; border:none; background:#eee; display:block;" />
+        </div>
+    </div>
+    <div class="info-box-below-hero">
+        <div>{titulo_html}</div>
+        <div>
+            Beyond Platform está pensada para quienes<br>
+            creen que la verdadera transformación de las<br>
+            sociedades nace de personas apasionadas por<br>
+            la educación y la innovación desde diferentes<br>
+            puntos de contacto y que son capaces de<br>
+            inspirar al mundo con sus acciones.
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Mostrar las 4 charlas más votadas en miniatura
+    videos = get_top_videos(4)
+    st.markdown('<div style="font-size:2rem; color:#7c82ce; font-weight:bold; text-decoration:underline; font-family:Roboto Condensed,Arial,sans-serif; margin:32px 0 18px 0; text-align:left;">Charlas</div>', unsafe_allow_html=True)
+    st.markdown("""
+    <style>
+    .charla-thumb {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        padding: 12px 8px 18px 8px;
+        margin-bottom: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 260px;
     }
-    
-    /* Sección de podcasts */
-    .podcasts-section {
-        margin: 40px 0;
+    .charla-thumb img {
+        width: 100%;
+        max-width: 180px;
+        min-height: 100px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        object-fit: cover;
+        background: #eee;
     }
-    
-    .podcasts-title {
-        font-size: 32px;
+    .charla-title {
+        font-size: 1.1rem;
         font-weight: bold;
         color: #333;
-        text-align: left;
-        margin-bottom: 30px;
-        text-decoration: underline;
-        text-underline-offset: 8px;
-    }
-    
-    .podcast-item {
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
-        margin-bottom: 15px;
-        padding: 15px;
-        background-color: #f8f9fa;
-    }
-    
-    .podcast-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    }
-    
-    .podcast-title {
-        font-size: 14px;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 8px;
-        line-height: 1.3;
-    }
-    
-    .no-content-message {
         text-align: center;
-        color: #666;
-        font-style: italic;
-        padding: 40px;
-        background-color: #f8f9fa;
-        border-radius: 10px;
-        margin: 20px 0;
+        margin-top: 6px;
     }
     </style>
     """, unsafe_allow_html=True)
-    
-    # Video y imagen ocupando todo el ancho sin espacios
-    st.markdown('<div class="video-image-container">', unsafe_allow_html=True)
-    col1, col2 = st.columns([1, 1], gap="small")
-    with col1:
-        # Video más grande usando HTML personalizado
-        st.markdown("""
-        <iframe width="100%" height="500" src="https://www.youtube.com/embed/ZNn2MBdliow" 
-        title="YouTube video player" frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen style="border-radius: 8px;"></iframe>
-        """, unsafe_allow_html=True)
-            
-    with col2:
-        st.image("assets/images/image1.jpg", use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Caja gris con información
-    st.markdown('''
-    <div class="info-box">
-        <div style="display: flex; align-items: flex-start; gap: 30px;">
-            <div style="flex: 1;">
-                <div class="info-title">¿QUÉ ES BEYOND PLATFORM?</div>
-            </div>
-            <div style="flex: 2;">
-                <div class="info-text">
-                Beyond Platform está pensada para quienes
-                creen que la verdadera transformación de las
-                sociedades nace de personas apasionadas por
-                la educación y la innovación desde diferentes
-                puntos de contacto y que son capaces de
-                inspirar al mundo con sus acciones
+    import re
+    if 'selected_video' not in st.session_state:
+        st.session_state['selected_video'] = None
+    cols = st.columns(4)
+    for idx, video in enumerate(videos):
+        with cols[idx % 4]:
+            import re
+            yt_match = re.search(r"(?:v=|youtu.be/|embed/)([\w-]+)", video["url"])
+            yt_id = yt_match.group(1) if yt_match else "ZNn2MBdliow"
+            st.markdown(f"""
+                <div class='charla-thumb'>
+                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/{yt_id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div class='charla-title'>{video['titulo']}</div>
                 </div>
-            </div>
-        </div>
-    </div>
-    ''', unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
-    # Sección de Charlas - Videos más votados
-    st.markdown('<div class="charlas-section">', unsafe_allow_html=True)
-    st.markdown('<div class="charlas-title">CHARLAS</div>', unsafe_allow_html=True)
-    
-    # Obtener los 4 videos más votados
-    top_videos = get_top_videos(4)
-    
-    if top_videos:
-        col1, col2, col3, col4 = st.columns(4)
-        columns = [col1, col2, col3, col4]
-        
-        for i, video in enumerate(top_videos):
-            with columns[i]:
-                # Extraer ID del video de YouTube
-                video_url = video['url']
-                if 'youtube.com/watch?v=' in video_url:
-                    video_id = video_url.split('watch?v=')[-1].split('&')[0]
-                elif 'youtu.be/' in video_url:
-                    video_id = video_url.split('youtu.be/')[-1].split('?')[0]
-                else:
-                    video_id = None
-                
-                if video_id:
-                    # Mostrar miniatura
-                    thumbnail_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
-                    st.markdown(f'''
-                    <div class="video-thumbnail">
-                        <a href="{video_url}" target="_blank">
-                            <img src="{thumbnail_url}" style="width: 100%; border-radius: 10px;" alt="{video['titulo']}">
-                        </a>
-                    </div>
-                    <div class="video-title">{video['titulo']}</div>
-                    ''', unsafe_allow_html=True)
-                else:
-                    # Fallback si no se puede extraer el ID
-                    st.markdown(f"**{video['titulo']}**")
-                    st.markdown(f"[Ver video]({video_url})")
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Sección de Podcasts - Podcasts más votados
-    st.markdown('<div class="podcasts-section">', unsafe_allow_html=True)
-    st.markdown('<div class="podcasts-title">PODCASTS</div>', unsafe_allow_html=True)
-    
-    # Obtener los 4 podcasts más votados
-    top_podcasts = get_top_podcasts(4)
-    
-    if top_podcasts:
-        col1, col2, col3, col4 = st.columns(4)
-        columns = [col1, col2, col3, col4]
-        for i, podcast in enumerate(top_podcasts):
-            with columns[i]:
-                url = podcast['url']
-                is_youtube = ('youtube.com/watch?v=' in url) or ('youtu.be/' in url)
-                video_embed = ''
-                if is_youtube:
-                    if 'youtube.com/watch?v=' in url:
-                        video_id = url.split('watch?v=')[-1].split('&')[0]
-                    elif 'youtu.be/' in url:
-                        video_id = url.split('youtu.be/')[-1].split('?')[0]
-                    else:
-                        video_id = ''
-                    if video_id:
-                        video_embed = f'<iframe width="100%" height="180" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 8px; margin-bottom: 10px;"></iframe>'
-                st.markdown(f'''
-                <div class="podcast-item">
-                    <div class="podcast-title">{podcast['titulo']}</div>
-                    <div style="font-size: 12px; color: #666; margin-bottom: 10px;">
-                        {podcast['descripcion'][:60]}{'...' if len(podcast['descripcion']) > 60 else ''}
-                    </div>
-                    {video_embed if is_youtube else f'<audio controls style="width: 100%; margin: 10px 0;"><source src="{url}" type="audio/mpeg">Tu navegador no soporta el elemento de audio.</audio>'}
+    # Sección de podcasts
+    st.markdown('<div style="font-size:2rem; color:#7c82ce; font-weight:bold; text-decoration:underline; font-family:Roboto Condensed,Arial,sans-serif; margin:32px 0 18px 0; text-align:left;">Podcasts</div>', unsafe_allow_html=True)
+    cols_pod = st.columns(4)
+    for idx, podcast in enumerate(podcasts):
+        with cols_pod[idx % 4]:
+            import re
+            yt_match = re.search(r"(?:v=|youtu.be/|embed/)([\w-]+)", podcast["url"])
+            yt_id = yt_match.group(1) if yt_match else "ZNn2MBdliow"
+            st.markdown(f"""
+                <div class='charla-thumb'>
+                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/{yt_id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <div class='charla-title'>{podcast['titulo']}</div>
                 </div>
-                ''', unsafe_allow_html=True)
-    else:
-        st.markdown('''
-        <div class="no-content-message">
-            <h3>📻 Próximamente...</h3>
-            <p>Estamos preparando contenido de podcast exclusivo para ti. 
-            ¡Mantente atento a las actualizaciones!</p>
-        </div>
-        ''', unsafe_allow_html=True)
-    
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # Display information based on button clicked (full width)
-    if "show_info" in st.session_state:
-        st.markdown("---")
-        if st.session_state.show_info == "quienes_somos":
-            st.markdown("### 🏢 Muyu Education - Quiénes Somos")
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown("""
-                **Muyu Education** es una empresa dedicada a transformar la educación y el desarrollo personal a través de tecnología innovadora y contenido de alta calidad.
-                
-                **Nuestra Misión:**
-                - 🌱 Facilitar el crecimiento personal y profesional continuo
-                - 🌍 Democratizar el acceso a educación de calidad mundial
-                - 🤝 Crear comunidades de aprendizaje colaborativo
-                """)
-            
-            with col2:
-                st.markdown("""
-                **Nuestros Valores:**
-                - **Innovación**: Utilizamos tecnología de vanguardia
-                - **Calidad**: Contenido curado por expertos
-                - **Accesibilidad**: Educación para todos
-                - **Comunidad**: Crecimiento conjunto
-                
-                **🎯 Nuestro Enfoque:**
-                Creemos en el poder transformador de la educación cuando se combina con tecnología innovadora y comunidad colaborativa.
-                """)
-        
-        elif st.session_state.show_info == "que_hacemos":
-            st.markdown("### 🎯 Qué Hacemos - Nuestra Propuesta")
-            
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                st.markdown("""
-                **📚 Contenido Curado:**
-                - Videos inspiradores de líderes mundiales
-                - Podcasts con expertos de diversas industrias
-                - Eventos exclusivos con speakers reconocidos
-                """)
-            
-            with col2:
-                st.markdown("""
-                **🚀 Metodología Innovadora:**
-                - Aprendizaje basado en experiencias reales
-                - Networking con profesionales de élite
-                - Herramientas interactivas de crecimiento
-                """)
-            
-            with col3:
-                st.markdown("""
-                **🎪 Eventos Beyond Summit:**
-                - Conferencias magistrales
-                - Workshops prácticos
-                - Sesiones de mentoría personalizada
-                """)
-        
-        elif st.session_state.show_info == "que_esperar":
-            st.markdown("### ✨ Qué Puedes Esperar - Tu Experiencia")
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                st.markdown("""
-                **🎓 Crecimiento Acelerado:**
-                - Acceso a más de 100+ horas de contenido premium
-                - Certificaciones reconocidas internacionalmente
-                - Mentorías con líderes de la industria
-                
-                **🌐 Comunidad Global:**
-                - Red de contactos de más de 10,000 profesionales
-                - Grupos exclusivos por industria y intereses
-                - Oportunidades de colaboración internacional
-                """)
-            
-            with col2:
-                st.markdown("""
-                **🔄 Actualización Constante:**
-                - Contenido nuevo cada semana
-                - Tendencias y herramientas más actuales
-                - Acceso temprano a eventos exclusivos
-                
-                **📈 Resultados Medibles:**
-                - Tracking de tu progreso personal
-                - Métricas de crecimiento profesional
-                - Retroalimentación personalizada
-                """)
-
-
-
-
-
+            """, unsafe_allow_html=True)
