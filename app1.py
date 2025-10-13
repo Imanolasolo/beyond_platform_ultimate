@@ -34,8 +34,8 @@ with col1:
     st.image('assets/images/Beyond_logo.jpg', width=200)
 with col2:    
     selected = option_menu(
-        menu_title='Beyond, Tu socio para crecer',  # Título del menú
-        options=["Inicio", "Charlas", "Podcasts","Beyond Summit","Admin Space"],  # Opciones del menú
+        menu_title=None,  # Sin título del menú
+    options=["Inicio", "Charlas", "Podcasts","Beyond Summit","Iniciar sesión"],  # Opciones del menú
         icons=["house", "info-circle", "envelope"],  # Iconos para las opciones
         menu_icon="cast",  # Icono del menú
         default_index=0,  # Opción seleccionada por defecto
@@ -48,6 +48,7 @@ with col2:
                 "font-family": "monospace",
                 "text-align": "left",
                 "margin":"0px",
+                "color": "black",
                 "--hover-color": "#eee",
             },
             "nav-link-selected": {"background-color": "#7c82ce"},
@@ -62,8 +63,8 @@ from dashboards.admin_dashboard import show as show_admin_dashboard
 from dashboards.beyond_summit_dashboard import show as show_beyond_summit_dashboard 
 from dashboards.init_dashboard import show as show_init_dashboard
 
-# Reset admin login when navigating away from Admin Space
-if selected != "Admin Space" and "admin_logged_in" in st.session_state:
+# Reset admin login when navigating away from Iniciar sesión
+if selected != "Iniciar sesión" and "admin_logged_in" in st.session_state:
     del st.session_state.admin_logged_in
 
 # Mostrar el dashboard correspondiente según la opción seleccionada
@@ -75,8 +76,8 @@ elif selected == "Podcasts":
     show_podcasts_dashboard()
 elif selected == "Beyond Summit":
     show_beyond_summit_dashboard()
-elif selected == "Admin Space":
-    # Always require login for Admin Space
+elif selected == "Iniciar sesión":
+    # Always require login for Iniciar sesión
     if "admin_logged_in" not in st.session_state or not st.session_state.admin_logged_in:
         st.title("🔐 Admin Login")
         st.markdown("---")

@@ -80,13 +80,23 @@ def update_existing_tables():
     conn = sqlite3.connect(DB_NAME)
     c = conn.cursor()
     
-    # Check if likes column exists, if not add it
+    # Check if likes column exists in videos, if not add it
     c.execute("PRAGMA table_info(videos)")
     columns = [column[1] for column in c.fetchall()]
     if 'likes' not in columns:
         c.execute("ALTER TABLE videos ADD COLUMN likes INTEGER DEFAULT 0")
         print("✅ Columna 'likes' agregada a la tabla videos.")
-    
+
+    # Check if duracion and categoria columns exist in podcasts, if not add them
+    c.execute("PRAGMA table_info(podcasts)")
+    columns = [column[1] for column in c.fetchall()]
+    if 'duracion' not in columns:
+        c.execute("ALTER TABLE podcasts ADD COLUMN duracion TEXT")
+        print("✅ Columna 'duracion' agregada a la tabla podcasts.")
+    if 'categoria' not in columns:
+        c.execute("ALTER TABLE podcasts ADD COLUMN categoria TEXT")
+        print("✅ Columna 'categoria' agregada a la tabla podcasts.")
+
     conn.commit()
     conn.close()
 

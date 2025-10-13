@@ -31,57 +31,53 @@ def get_share_url(podcast_url):
     return podcast_url
 
 def show():
-    # Add custom CSS for tooltip
+    # Unificar estilos visuales con la home
     st.markdown("""
     <style>
-    .tooltip {
-        position: relative;
-        display: inline-block;
-        cursor: pointer;
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 300px;
-        background-color: #333;
-        color: white;
+    .podcasts-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #7c82ce;
         text-align: left;
-        border-radius: 6px;
-        padding: 10px;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-        margin-left: -150px;
-        opacity: 0;
-        transition: opacity 0.3s;
+        margin-bottom: 20px;
+    }
+    .podcast-item {
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 15px;
+        padding: 15px;
+        background-color: #f8f9fa;
+    }
+    .podcast-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .podcast-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+    .podcast-desc {
         font-size: 14px;
-        line-height: 1.4;
-        box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
-    }
-
-    .tooltip .tooltiptext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #333 transparent transparent transparent;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
-    
-    .podcast-player {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 15px;
-        padding: 20px;
-        color: white;
+        color: #555;
+        margin-bottom: 10px;
         text-align: center;
+    }
+    .like-btn {
+        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-right: 8px;
+    }
+    .like-btn:hover {
+        background: linear-gradient(135deg, #ff5722 0%, #00bcd4 100%);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -108,110 +104,44 @@ def show():
     
     conn.close()
 
-    # Find the podcast with most likes (first one after ordering)
-    main_podcast = podcasts[0] if podcasts else None
-    
-    col1, col2 = st.columns([3, 6])
-    with col1: 
-        # Introductory paragraph about Podcasts
-        st.markdown("""
-            **Descubre Nuestros Podcasts**  
-            Sumérgete en conversaciones profundas y reflexivas con expertos de diversas áreas. 
-            Nuestros podcasts están diseñados para expandir tu mente, inspirar nuevas ideas y 
-            acompañarte en tu crecimiento personal y profesional.
-        """)
-    with col2:
-        if main_podcast:
-            # Show the most liked podcast as main podcast
-            st.markdown(f"""
-                <div class="podcast-player">
-                    <h3>🎧 Podcast Más Popular</h3>
-                    <h4>{main_podcast['titulo']}</h4>
-                    <audio controls style="width: 100%; margin: 10px 0;">
-                        <source src="{main_podcast['url']}" type="audio/mpeg">
-                        Tu navegador no soporta el elemento de audio.
-                    </audio>
-                    <p style="font-style: italic; margin-top: 10px;">
-                        {main_podcast['likes'] or 0} likes | Duración: {main_podcast.get('duracion', 'N/A')}
-                    </p>
-                </div>
-            """, unsafe_allow_html=True)
-        else:
-            # Fallback message if no podcasts in database
-            st.markdown("""
-                <div class="podcast-player">
-                    <h3>🎧 Próximamente</h3>
-                    <p>Estamos preparando contenido increíble para ti.</p>
-                    <p>¡Mantente atento a nuestros próximos lanzamientos!</p>
-                </div>
-            """, unsafe_allow_html=True)
-
-    # Add separator line between introduction and podcasts
+    # Título principal
+    st.markdown('<div class="podcasts-title">PODCASTS</div>', unsafe_allow_html=True)
     st.markdown("---")
-
     if podcasts:
-        st.subheader("🎙️ Todos los Podcasts")
-        
-        for i in range(0, len(podcasts), 2):  # Group podcasts in sets of 2 for better layout
-            group = podcasts[i:i+2]
-            cols = st.columns(2)  # Create 2 columns for the group
+        # Mostrar podcasts en tarjetas de 4 columnas como en la home
+        for i in range(0, len(podcasts), 4):
+            group = podcasts[i:i+4]
+            cols = st.columns(4)
             for col, podcast in zip(cols, group):
                 with col:
-                    # Check if description needs truncation
-                    description = podcast['descripcion'] or ""
-                    truncated_desc = truncate_text(description, 150)
-                    is_truncated = len(description) > 150
-                    
-                    # Create tooltip HTML if description is truncated
-                    if is_truncated:
-                        description_html = f"""
-                        <div class="tooltip">
-                            <span>{truncated_desc}</span>
-                            <span class="tooltiptext">{description}</span>
-                        </div>
-                        """
-                    else:
-                        description_html = truncated_desc
-                    
-                    # Podcast card
-                    st.markdown(f"""
-                        <div style="border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9;">
-                            <h4 style="color: #333; margin-bottom: 10px;">🎧 {podcast['titulo']}</h4>
-                            <audio controls style="width: 100%; margin: 10px 0;">
-                                <source src="{podcast['url']}" type="audio/mpeg">
-                                Tu navegador no soporta el elemento de audio.
-                            </audio>
-                            <p style="margin-top: 10px; color: #666; font-size: 14px;">{description_html}</p>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                                <small style="color: #888;">Duración: {podcast.get('duracion', 'N/A')}</small>
-                                <small style="color: #888;">Categoría: {podcast.get('categoria', 'General')}</small>
-                            </div>
-                        </div>
-                    """, unsafe_allow_html=True)
-                    
-                    # Like and Share buttons
-                    button_col1, button_col2 = st.columns(2)
-                    with button_col1:
-                        likes_count = podcast.get('likes', 0) or 0
-                        if st.button(f"❤️ Like ({likes_count})", key=f"like_{podcast['id']}"):
-                            like_podcast(podcast['id'])
-                            st.rerun()
-                    with button_col2:
-                        if st.button("📤 Share", key=f"share_{podcast['id']}"):
-                            share_url = get_share_url(podcast['url'])
-                            st.success(f"URL para compartir: {share_url}")
-                            st.code(share_url)
-
-            if i + 2 < len(podcasts):  # Add separator between groups, but not after the last group
+                    url = podcast['url']
+                    is_youtube = ('youtube.com/watch?v=' in url) or ('youtu.be/' in url)
+                    video_embed = ''
+                    if is_youtube:
+                        if 'youtube.com/watch?v=' in url:
+                            video_id = url.split('watch?v=')[-1].split('&')[0]
+                        elif 'youtu.be/' in url:
+                            video_id = url.split('youtu.be/')[-1].split('?')[0]
+                        else:
+                            video_id = ''
+                        if video_id:
+                            video_embed = f'<iframe width="100%" height="180" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 8px; margin-bottom: 10px;"></iframe>'
+                    st.markdown(f'''
+                    <div class="podcast-item">
+                        <div class="podcast-title">{podcast['titulo']}</div>
+                        <div class="podcast-desc">{podcast['descripcion'][:60]}{'...' if len(podcast['descripcion']) > 60 else ''}</div>
+                        {video_embed if is_youtube else f'<audio controls style="width: 100%; margin: 10px 0;"><source src="{url}" type="audio/mpeg">Tu navegador no soporta el elemento de audio.</audio>'}
+                        <div class="podcast-desc">Duración: {podcast['duracion'] if 'duracion' in podcast.keys() else 'N/A'} | Categoría: {podcast['categoria'] if 'categoria' in podcast.keys() else 'General'}</div>
+                        <button class="like-btn" onclick="window.location.reload()">❤️ {podcast['likes'] if 'likes' in podcast.keys() else 0}</button>
+                    </div>
+                    ''', unsafe_allow_html=True)
+            if i + 4 < len(podcasts):
                 st.markdown("---")
     else:
-        st.info("📻 No hay podcasts disponibles en este momento. ¡Pronto tendremos contenido increíble para ti!")
-        
-        # Suggestion section when no podcasts available
-        st.markdown("""
-        ### 💡 Mientras tanto...
-        
-        - Explora nuestros **Videos** para contenido visual inspirador
-        - Únete a **Beyond Summit** para eventos en vivo
-        - Suscríbete para recibir notificaciones de nuevos podcasts
-        """)
+        st.markdown('''
+        <div class="podcast-item" style="text-align:center;">
+            <h3>📻 Próximamente...</h3>
+            <p>Estamos preparando contenido de podcast exclusivo para ti. 
+            ¡Mantente atento a las actualizaciones!</p>
+        </div>
+        ''', unsafe_allow_html=True)
