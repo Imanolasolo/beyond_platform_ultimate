@@ -97,7 +97,7 @@ with col2:
                 "container": {"padding": "0!important", "background-color": "transparent"},
                 # "icon": {"color": "orange", "font-size": "20px"},
                 "nav-link": {
-                    "font-size": "16px",
+                    "font-size": "12px",
                     "font-family": "'Roboto Condensed', Arial, sans-serif",
                     "text-align": "left",
                     "margin": "0px",
