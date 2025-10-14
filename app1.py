@@ -39,6 +39,44 @@ st.markdown('''
         letter-spacing: 0.04em;
         font-stretch: expanded;
     }
+    /* Ocultar cualquier icono, flecha o chevron del menu superior option_menu */
+    .option-menu-horizontal .menu-icon,
+    .option-menu-horizontal .nav-link .fa,
+    .option-menu-horizontal .nav-link .bi,
+    .option-menu-horizontal .nav-link svg,
+    .option-menu-horizontal .nav-link i,
+    .option-menu-horizontal .nav-link [class*="icon"],
+    .option-menu-horizontal .nav-link [class*="chevron"],
+    .option-menu-horizontal .nav-link [class*="arrow"],
+    .option-menu-horizontal .nav-link [data-testid*="icon"],
+    .option-menu-horizontal .nav-link [data-testid*="chevron"],
+    .option-menu-horizontal .nav-link [data-testid*="arrow"],
+    .option-menu-horizontal .nav-link > span > svg,
+    .option-menu-horizontal .nav-link > svg,
+    .option-menu-horizontal .nav-link > i {
+        display: none !important;
+    }
+    /* También ocultar cualquier icono en el contenedor del menú */
+    .option-menu-horizontal [class*="icon"],
+    .option-menu-horizontal [class*="chevron"],
+    .option-menu-horizontal [class*="arrow"] {
+        display: none !important;
+    }
+    /* Ocultar pseudo-elementos ::after y ::before en los enlaces del menú */
+    .option-menu-horizontal .nav-link::after,
+    .option-menu-horizontal .nav-link::before {
+        display: none !important;
+        content: none !important;
+    }
+    /* Ocultar cualquier <i> o <svg> dentro de los enlaces del menú */
+    .option-menu-horizontal .nav-link i,
+    .option-menu-horizontal .nav-link svg {
+        display: none !important;
+    }
+    /* Forzar solo texto en el menú */
+    .option-menu-horizontal .nav-link span.menu-icon {
+        display: none !important;
+    }
     </style>
 ''', unsafe_allow_html=True)
 
@@ -50,7 +88,7 @@ with col2:
         st.markdown('<div class="roboto-expanded">', unsafe_allow_html=True)
         selected = option_menu(
             menu_title=None,  # Sin título del menú
-            options=["INICIO", "CHARLAS", "PODCASTS", "BEYOND SUMMIT", "INICIAR SESIÓN"],  # Opciones del menú
+            options=["¿QUÉ ES BEYOND PLATFORM?", "CHARLAS", "PODCASTS", "BEYOND SUMMIT", "INICIAR SESIÓN"],  # Opciones del menú
             # icons eliminado para quitar iconos
             menu_icon=" ",  # Sin icono de menú ni flecha
             default_index=0,  # Opción seleccionada por defecto
@@ -86,7 +124,7 @@ if selected != "Iniciar sesión" and "admin_logged_in" in st.session_state:
     del st.session_state.admin_logged_in
 
 # Mostrar el dashboard correspondiente según la opción seleccionada
-if selected == "INICIO":
+if selected == "¿QUÉ ES BEYOND PLATFORM?":
     show_init_dashboard()
 elif selected == "CHARLAS":
     show_videos_dashboard()    

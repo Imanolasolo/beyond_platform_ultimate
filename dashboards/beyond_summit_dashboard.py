@@ -260,31 +260,31 @@ def show():
             if i < len(events) - 1:
                 st.markdown("---")
     else:
-        st.info("🎪 No hay eventos programados en este momento. ¡Grandes cosas están por venir!")
+        st.info("No hay eventos programados en este momento. ¡Grandes cosas están por venir!")
         # Call to action section when no events available
         st.markdown("""
-        ### 🌟 Mientras preparamos eventos increíbles...
+        ### Mientras preparamos eventos increíbles...
         
-        **📧 Mantente conectado:**
+        **Mantente conectado:**
         - Suscríbete a nuestro newsletter para recibir anuncios exclusivos
         - Síguenos en redes sociales para actualizaciones en tiempo real
         - Únete a nuestra comunidad para ser el primero en conocer las fechas
         
-        **🎥 Explora nuestro contenido:**
+        **Explora nuestro contenido:**
         - **Videos** inspiradores de eventos pasados
         - **Podcasts** con conversaciones profundas de nuestros speakers
         
-        **💡 ¿Tienes ideas para eventos?**
+        **¿Tienes ideas para eventos?**
         ¡Nos encantaría escucharte! Contáctanos para proponer temas o speakers.
         """)
         # Newsletter signup placeholder
-        with st.expander("📬 Suscríbete para recibir notificaciones"):
+        with st.expander("Suscríbete para recibir notificaciones"):
             email = st.text_input("Tu email", placeholder="ejemplo@email.com")
             interests = st.multiselect(
                 "Temas de interés:",
                 ["Tecnología", "Liderazgo", "Innovación", "Emprendimiento", "Desarrollo Personal"]
             )
-            if st.button("🔔 Suscribirse"):
+            if st.button("Suscribirse"):
                 if email:
                     st.success("¡Gracias! Te notificaremos sobre próximos eventos.")
                 else:
