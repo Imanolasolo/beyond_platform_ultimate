@@ -17,7 +17,8 @@ def get_user_by_email(conn, email: str):
     return cur.fetchone()
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    # bcrypt solo admite hasta 72 bytes, truncar si es necesario
+    return pwd_context.verify(plain_password[:72], hashed_password)
 
 # Configurar la página
 st.set_page_config(
