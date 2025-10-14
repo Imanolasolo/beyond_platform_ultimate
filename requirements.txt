@@ -3,5 +3,5 @@ pandas
 numpy
 requests
 passlib
-bcrypt
+bcrypt>=3.2.0
 streamlit-option-menu
