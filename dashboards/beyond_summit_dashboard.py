@@ -36,269 +36,231 @@ def get_share_url(event_url):
     return event_url
 
 def show():
-    # Add custom CSS for styling
+    # CSS y layout similar a init_dashboard.py, sin video hero
     st.markdown("""
+    <link href='https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap' rel='stylesheet'>
     <style>
-    .tooltip {
-        position: relative;
-        display: inline-block;
-        cursor: pointer;
-    }
-
-    .tooltip .tooltiptext {
-        visibility: hidden;
-        width: 300px;
-        background-color: #333;
-        color: white;
-        text-align: left;
-        border-radius: 6px;
-        padding: 10px;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-        margin-left: -150px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        font-size: 14px;
-        line-height: 1.4;
-        box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
-    }
-
-    .tooltip .tooltiptext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #333 transparent transparent transparent;
-    }
-
-    .tooltip:hover .tooltiptext {
-        visibility: visible;
-        opacity: 1;
-    }
-    
-    .summit-hero {
-        background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
-        border-radius: 15px;
-        padding: 25px;
-        color: white;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    
-    .event-card {
-        border: 2px solid #e0e0e0;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 20px;
-        background: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transition: transform 0.2s;
-    }
-    
-    .event-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
-    
-    .event-status {
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 12px;
+    .beyond-title-hero {
+        font-size: 40px;
         font-weight: bold;
-        margin-bottom: 10px;
+        color: #7c82ce;
+        text-align: center;
+        margin-bottom: 0px;
+        margin-top: 24px;
+        letter-spacing: 0.01em;
+        font-family: 'Roboto Condensed', Arial, sans-serif;
     }
-    
-    .status-upcoming {
-        background-color: #28a745;
-        color: white;
+    .fullwidth-row {
+        width: 100vw;
+        min-width: 100vw;
+        max-width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        gap: 0;
+        background: transparent;
     }
-    
-    .status-live {
-        background-color: #dc3545;
-        color: white;
-        animation: pulse 1.5s infinite;
+    .fullwidth-row > div {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0;
+        margin: 0;
     }
-    
-    .status-completed {
-        background-color: #6c757d;
-        color: white;
+    .fullwidth-row img {
+        display: block;
+        width: 100%;
+        height: 60vh;
+        max-height: 90vh;
+        border-radius: 0;
+        margin: 0;
+        padding: 0;
+        object-fit: cover;
+        background: #eee;
     }
-    
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.7; }
-        100% { opacity: 1; }
+    @media (max-width: 900px) {
+        .fullwidth-row img {
+            height: 40vh;
+        }
+    }
+    @media (max-width: 600px) {
+        .fullwidth-row {
+            flex-direction: column;
+        }
+        .fullwidth-row img {
+            height: 30vh;
+        }
+    }
+    .info-box-below-hero {
+        width: 100vw;
+        min-width: 100vw;
+        max-width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        margin-right: calc(-50vw + 50%);
+        background: #f4f5fa;
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+        border-radius: 0 0 16px 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    .info-box-below-hero > div {
+        flex: 1 1 0;
+        padding: 32px 40px 32px 40px;
+        font-size: 1.15rem;
+        color: #444;
+        line-height: 1.6;
+        background: none;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+    .info-box-below-hero > div:first-child {
+        align-items: center;
+        flex-basis: 40%;
+        max-width: 40%;
+    }
+    .info-box-below-hero > div:last-child {
+        align-items: center;
+        justify-content: center;
+        flex-basis: 60%;
+        max-width: 60%;
+        text-align: center;
+    }
+    @media (max-width: 900px) {
+        .info-box-below-hero {
+            flex-direction: column;
+        }
+        .info-box-below-hero > div {
+            padding: 18px 10px 18px 10px;
+            flex-basis: 100%;
+            max-width: 100%;
+            align-items: center !important;
+        }
+    }
+    @media (max-width: 900px) {
+        .info-box-below-hero > div {
+            padding: 18px 10px 18px 10px;
+        }
+    }
+    .summit-card {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        padding: 12px 8px 18px 8px;
+        margin-bottom: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 220px;
+    }
+    .summit-card-title {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-top: 6px;
+        font-family: 'Roboto Condensed', Arial, sans-serif;
     }
     </style>
     """, unsafe_allow_html=True)
 
-    # Get all events from database
+    # Imagen destacada (puedes cambiar la ruta si tienes una imagen específica)
+    import os, base64
+    local_img = "assets/images/image1.jpg"
+    if os.path.exists(local_img):
+        with open(local_img, "rb") as img_file:
+            img_base64 = base64.b64encode(img_file.read()).decode()
+        img_src = f"data:image/jpeg;base64,{img_base64}"
+    else:
+        img_src = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+
+    titulo_html = "<span class='beyond-title-hero'>BEYOND SUMMIT</span>"
+    # Info box centrada usando columnas de Streamlit
+    st.markdown(f"""
+    <div class="fullwidth-row">
+        <div>
+            <img src="{img_src}" alt="Imagen Beyond Summit" />
+        </div>
+        <div style="display:flex; align-items:center; justify-content:center;">
+            {titulo_html}
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Caja gris con texto centrado usando columnas
+    # Solo caja gris con texto centrado usando columnas de Streamlit
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        st.markdown(
+            """
+            <div style='background:#f4f5fa; border-radius:0 0 16px 16px; box-shadow:0 2px 8px rgba(0,0,0,0.04); padding:32px 40px; font-size:1.15rem; color:#444; line-height:1.6; text-align:center;'>
+            Beyond Summit es el espacio donde conectamos líderes, innovadores y mentes creativas en experiencias transformadoras.<br>
+            Conferencias, workshops, networking y más para inspirar el cambio y el crecimiento.
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # Obtener eventos de la base de datos
     conn = get_db()
     c = conn.cursor()
-    
-    # Check if likes column exists, if not add it
     try:
         c.execute("SELECT * FROM beyond_summit ORDER BY likes DESC, titulo ASC")
         events = c.fetchall()
     except sqlite3.OperationalError:
-        # Add likes column if it doesn't exist
         try:
             c.execute("ALTER TABLE beyond_summit ADD COLUMN likes INTEGER DEFAULT 0")
             conn.commit()
             c.execute("SELECT * FROM beyond_summit ORDER BY likes DESC, titulo ASC")
             events = c.fetchall()
         except sqlite3.OperationalError:
-            # Table might not exist
             events = []
-    
     conn.close()
 
-    # Find the event with most likes (first one after ordering)
-    main_event = events[0] if events else None
-    
-    col1, col2 = st.columns([3, 6])
-    with col1: 
-        # Introductory paragraph about Beyond Summit
-        st.markdown("""
-            **🚀 Beyond Summit Experience**  
-            
-            Únete a experiencias transformadoras que van más allá de lo convencional. 
-            Nuestros eventos conectan líderes visionarios, innovadores y mentes creativas 
-            en conversaciones que inspiran el cambio y el crecimiento.
-            
-            **✨ Lo que te espera:**
-            - Conferencias magistrales
-            - Workshops interactivos  
-            - Networking exclusivo
-            - Experiencias inmersivas
-        """)
-    with col2:
-        if main_event:
-            # Show the most liked event as main event
-            event_status = main_event.get('estado', 'upcoming')
-            status_class = f"status-{event_status}"
-            status_text = {
-                'upcoming': '🔜 PRÓXIMO',
-                'live': '🔴 EN VIVO',
-                'completed': '✅ COMPLETADO'
-            }.get(event_status, '🔜 PRÓXIMO')
-            
-            st.markdown(f"""
-                <div class="summit-hero">
-                    <div class="event-status {status_class}">{status_text}</div>
-                    <h2>🎯 Evento Destacado</h2>
-                    <h3>{main_event['titulo']}</h3>
-                    <p><strong>📅 Fecha:</strong> {main_event.get('fecha', 'Por confirmar')}</p>
-                    <p><strong>⏰ Hora:</strong> {main_event.get('hora', 'Por confirmar')}</p>
-                    <p><strong>❤️ {main_event.get('likes', 0)} personas interesadas</strong></p>
-                </div>
-            """, unsafe_allow_html=True)
-        else:
-            # Fallback message if no events in database
-            st.markdown("""
-                <div class="summit-hero">
-                    <h2>🎯 Próximos Eventos</h2>
-                    <p>Estamos preparando experiencias extraordinarias para ti.</p>
-                    <p><strong>¡Mantente conectado para las próximas fechas!</strong></p>
-                    <br>
-                    <p>🔔 Activa las notificaciones</p>
-                    <p>📧 Suscríbete a nuestro newsletter</p>
-                </div>
-            """, unsafe_allow_html=True)
+    st.markdown('<div style="font-size:2rem; color:#7c82ce; font-weight:bold; text-decoration:underline; font-family:Roboto Condensed,Arial,sans-serif; margin:32px 0 18px 0; text-align:left;">Eventos Beyond Summit</div>', unsafe_allow_html=True)
 
-    # Add separator line between introduction and events
-    st.markdown("---")
+    if events:
+        cols = st.columns(4)
+        for idx, event in enumerate(events):
+            with cols[idx % 4]:
+                st.markdown(f"""
+                    <div class='summit-card'>
+                        <div class='summit-card-title'>{event['titulo']}</div>
+                        <div style='font-size:0.95rem; color:#666; margin:8px 0 4px 0;'>
+                            <strong>📅 Fecha:</strong> {event.get('fecha', 'Por confirmar')}<br>
+                            <strong>⏰ Hora:</strong> {event.get('hora', 'Por confirmar')}<br>
+                            <strong>📍 Lugar:</strong> {event.get('lugar', 'Virtual/Presencial')}<br>
+                            <strong>👥 Ponente:</strong> {event.get('ponente', 'Por anunciar')}
+                        </div>
+                        <div style='font-size:0.9rem; color:#888; margin-bottom:8px;'>
+                            {truncate_text(event['descripcion'] or '', 120)}
+                        </div>
+                        <div style='display:flex; justify-content:center; gap:10px; margin-top:auto;'>
+                            <span style='font-size:0.9rem; color:#7c82ce;'>❤️ {event.get('likes', 0) or 0}</span>
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+                if st.button(f"❤️ Me interesa ({event.get('likes', 0) or 0})", key=f"like_{event['id']}"):
+                    like_event(event['id'])
+                    st.rerun()
 
     if events:
         st.subheader("🗓️ Todos los Eventos Beyond Summit")
         
         for i, event in enumerate(events):
-            # Determine event status and styling
-            event_status = event.get('estado', 'upcoming')
-            status_class = f"status-{event_status}"
-            status_text = {
-                'upcoming': '🔜 PRÓXIMO',
-                'live': '🔴 EN VIVO',
-                'completed': '✅ COMPLETADO'
-            }.get(event_status, '🔜 PRÓXIMO')
-            
-            # Check if description needs truncation
-            description = event['descripcion'] or ""
-            truncated_desc = truncate_text(description, 200)
-            is_truncated = len(description) > 200
-            
-            # Create tooltip HTML if description is truncated
-            if is_truncated:
-                description_html = f"""
-                <div class="tooltip">
-                    <span>{truncated_desc}</span>
-                    <span class="tooltiptext">{description}</span>
-                </div>
-                """
-            else:
-                description_html = truncated_desc
-            
-            # Event card
-            st.markdown(f"""
-                <div class="event-card">
-                    <div class="event-status {status_class}">{status_text}</div>
-                    <h3 style="color: #2c3e50; margin-bottom: 15px;">🎤 {event['titulo']}</h3>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                        <div>
-                            <p style="margin: 5px 0;"><strong>📅 Fecha:</strong> {event.get('fecha', 'Por confirmar')}</p>
-                            <p style="margin: 5px 0;"><strong>⏰ Hora:</strong> {event.get('hora', 'Por confirmar')}</p>
-                        </div>
-                        <div>
-                            <p style="margin: 5px 0;"><strong>📍 Lugar:</strong> {event.get('lugar', 'Virtual/Presencial')}</p>
-                            <p style="margin: 5px 0;"><strong>👥 Ponente:</strong> {event.get('ponente', 'Por anunciar')}</p>
-                        </div>
-                    </div>
-                    <p style="color: #666; font-size: 14px; line-height: 1.5; margin-bottom: 15px;">{description_html}</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <small style="color: #888;">🏷️ Categoría: {event.get('categoria', 'Conferencia')}</small>
-                        <small style="color: #888;">💰 {event.get('precio', 'Gratuito')}</small>
-                    </div>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            # Action buttons
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                likes_count = event.get('likes', 0) or 0
-                if st.button(f"❤️ Me interesa ({likes_count})", key=f"like_{event['id']}"):
-                    like_event(event['id'])
-                    st.rerun()
-            with col2:
-                if event_status == 'upcoming':
-                    if st.button("📝 Registrarse", key=f"register_{event['id']}"):
-                        registration_url = register_for_event(event['id'])
-                        st.success("¡Registro exitoso! Te enviaremos los detalles por email.")
-                        st.info("🔗 Link de confirmación enviado a tu email")
-                elif event_status == 'live':
-                    if st.button("🔴 Unirse Ahora", key=f"join_{event['id']}"):
-                        st.success("¡Redirigiendo al evento en vivo!")
-                else:  # completed
-                    if st.button("📹 Ver Grabación", key=f"watch_{event['id']}"):
-                        st.info("Accediendo a la grabación del evento...")
-            with col3:
-                if st.button("📤 Compartir", key=f"share_{event['id']}"):
-                    share_url = get_share_url(event.get('url', '#'))
-                    st.success(f"¡Comparte este evento!")
-                    st.code(f"🔗 {share_url}")
-            
-            # Add separator between events
+            # ...existing code...
             if i < len(events) - 1:
                 st.markdown("---")
-                
     else:
         st.info("🎪 No hay eventos programados en este momento. ¡Grandes cosas están por venir!")
-        
         # Call to action section when no events available
         st.markdown("""
         ### 🌟 Mientras preparamos eventos increíbles...
@@ -315,7 +277,6 @@ def show():
         **💡 ¿Tienes ideas para eventos?**
         ¡Nos encantaría escucharte! Contáctanos para proponer temas o speakers.
         """)
-        
         # Newsletter signup placeholder
         with st.expander("📬 Suscríbete para recibir notificaciones"):
             email = st.text_input("Tu email", placeholder="ejemplo@email.com")

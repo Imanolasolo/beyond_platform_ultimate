@@ -29,7 +29,7 @@ def verify_password(plain_password, hashed_password):
 
 # Crear menú de navegación superior con texto clickeable
 col1, col2, col3 = st.columns([1, 1.5, 3], gap="small")
-col1.image("assets/images/Beyond_logo.jpg", width=150)
+col1.image("", width=150)
 col2.subheader("")
 with col3:
     # CSS para estilizar los botones como enlaces de texto

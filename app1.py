@@ -44,7 +44,7 @@ st.markdown('''
 
 col1, col2 = st.columns([1, 6])
 with col1:
-    st.image('assets/images/Beyond_logo.jpg', width=200)
+    st.image('assets/images/beyond1.png', width=200)
 with col2:
     with st.container():
         st.markdown('<div class="roboto-expanded">', unsafe_allow_html=True)
@@ -144,40 +144,42 @@ elif selected == "INICIAR SESIÓN":
 
 import base64
 
-with open("assets/images/Beyond_logo.jpg", "rb") as f:
+with open("assets/images/beyond1.png", "rb") as f:
     logo_data = base64.b64encode(f.read()).decode()
 with open("assets/images/muyu_logo_1.png", "rb") as f:
     muyu_logo_data = base64.b64encode(f.read()).decode()
 
 footer_original = f"""
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 <style>
 .footer-original {{
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100vw;
-        background-color: #7c82ce;
-        color: white;
-        padding: 12px 0 8px 0;
-        font-size: 16px;
-        z-index: 9999;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    background-color: #7c82ce;
+    color: white;
+    padding: 12px 0 8px 0;
+    font-size: 16px;
+    z-index: 9999;
+    font-family: 'Roboto Condensed', Arial, sans-serif !important;
 }}
 .footer-flex {{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        max-width: 1200px;
-        margin: 0 auto;
-        width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
 }}
 .footer-logo {{
-        flex: 0 0 auto;
-        display: flex;
-        align-items: center;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }}
 .footer-center {{
-        flex: 1 1 auto;
-        text-align: center;
+    flex: 1 1 auto;
+    text-align: center;
 }}
 .footer-linkedin {{
         flex: 0 0 auto;
@@ -193,14 +195,14 @@ footer_original = f"""
             </div>
             <div style="display: flex; align-items: center; flex: 1 1 auto; justify-content: center;">
                 <div style="width:2px; height:50px; background:white; margin-right:24px; margin-left:6px;"></div>
-                                                <div style="color:white; font-size:16px; font-family:monospace; margin-right:24px; display:flex; flex-direction:column; align-items:center;">
+                                                <div style="color:white; font-size:16px; font-family:'Roboto Condensed', Arial, sans-serif; margin-right:24px; display:flex; flex-direction:column; align-items:center;">
                                                     <span>Beyond Platform es<br>parte de Muyu Education.</span>
                                                                                             <div style='display:flex; align-items:center; gap:10px; margin-top:4px;'>
                                                                                                 <img src="data:image/png;base64,{muyu_logo_data}" alt="Muyu Logo" style="height:32px;"/>
                                                                                             </div>
                                                 </div>
                 <div style="width:2px; height:50px; background:white; margin-left:6px; margin-right:24px;"></div>
-                                <div style="color:white; font-size:16px; font-family:monospace; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px;">
+                                <div style="color:white; font-size:16px; font-family:'Roboto Condensed', Arial, sans-serif; text-align:center; display:flex; align-items:center; justify-content:center; gap:8px;">
                                     <span>Sigue a Beyond</span>
                                     <a href="https://www.linkedin.com/in/tu-perfil-linkedin" target="_blank" title="LinkedIn" style="color: white; text-decoration: none; display:inline-flex; align-items:center;">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.268c-.966 0-1.75-.784-1.75-1.75s.784-1.75 1.75-1.75 1.75.784 1.75 1.75-.784 1.75-1.75 1.75zm15.5 11.268h-3v-5.604c0-1.337-.025-3.063-1.868-3.063-1.868 0-2.154 1.459-2.154 2.968v5.699h-3v-10h2.881v1.367h.041c.401-.761 1.379-1.563 2.838-1.563 3.036 0 3.6 2.001 3.6 4.601v5.595z"/></svg>
