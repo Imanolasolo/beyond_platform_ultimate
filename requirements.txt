@@ -2,12 +2,7 @@ streamlit
 pandas
 numpy
 requests
-<<<<<<< HEAD
 passlib>=1.7.4
 bcrypt>=3.2.0
 wheel
-=======
-passlib
-bcrypt>=3.2.0
->>>>>>> c4c37ce809f2f2c102ede537fb435236b1a94080
 streamlit-option-menu
