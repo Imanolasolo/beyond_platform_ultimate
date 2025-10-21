@@ -92,17 +92,23 @@ def manage_podcasts():
     action = st.selectbox("Acción", ["Listar", "Agregar", "Modificar", "Eliminar"], key="podcasts_action")
 
     # Fetch podcasts from database
-    conn = get_db()
-    c = conn.cursor()
     try:
+        conn = get_db()
+        c = conn.cursor()
         c.execute("SELECT * FROM podcasts ORDER BY id DESC")
         podcasts = c.fetchall()
     except sqlite3.OperationalError:
         podcasts = []
         st.error("Error: La tabla de podcasts no existe en la base de datos.")
+    except sqlite3.Error as e:
+        podcasts = []
+        st.error(f"Error al acceder a la base de datos: {e}")
     finally:
-        conn.close()
-    
+        try:
+            conn.close()
+        except Exception:
+            pass
+
     if action == "Listar":
         if podcasts:
             # Convert to list of dictionaries for better display
@@ -126,9 +132,9 @@ def manage_podcasts():
             description = st.text_area("Descripción")
             submitted = st.form_submit_button("Agregar")
             if submitted:
-                conn = get_db()
-                c = conn.cursor()
                 try:
+                    conn = get_db()
+                    c = conn.cursor()
                     c.execute("""
                         INSERT INTO podcasts (titulo, descripcion, url, duracion, categoria, likes)
                         VALUES (?, ?, ?, ?, ?, 0)
@@ -142,19 +148,20 @@ def manage_podcasts():
     
     elif action == "Modificar":
         if podcasts:
-            podcast_titles = [podcast["Título"] for podcast in podcasts]
+            # Usar claves reales de la DB ('titulo')
+            podcast_titles = [podcast["titulo"] for podcast in podcasts]
             selected_podcast = st.selectbox("Selecciona un podcast", podcast_titles, key="modify_podcast_select")
-            podcast = next((p for p in podcasts if p["Título"] == selected_podcast), None)
+            podcast = next((p for p in podcasts if p["titulo"] == selected_podcast), None)
             if podcast:
                 with st.form("modify_podcast_form"):
-                    title = st.text_input("Nuevo título", value=podcast["Título"])
-                    url = st.text_input("Nueva URL", value=podcast["URL"])
-                    description = st.text_area("Nueva descripción", value=podcast["Descripción"])
+                    title = st.text_input("Nuevo título", value=podcast["titulo"])
+                    url = st.text_input("Nueva URL", value=podcast["url"])
+                    description = st.text_area("Nueva descripción", value=podcast["descripcion"])
                     submitted = st.form_submit_button("Modificar")
                     if submitted:
-                        conn = get_db()
-                        c = conn.cursor()
                         try:
+                            conn = get_db()
+                            c = conn.cursor()
                             c.execute("""
                                 UPDATE podcasts 
                                 SET titulo=?, descripcion=?, url=?
@@ -171,12 +178,12 @@ def manage_podcasts():
     
     elif action == "Eliminar":
         if podcasts:
-            podcast_titles = [podcast["Título"] for podcast in podcasts]
+            podcast_titles = [podcast["titulo"] for podcast in podcasts]
             selected_podcast = st.selectbox("Selecciona un podcast", podcast_titles, key="delete_podcast_select")
             if st.button("Eliminar"):
-                conn = get_db()
-                c = conn.cursor()
                 try:
+                    conn = get_db()
+                    c = conn.cursor()
                     c.execute("DELETE FROM podcasts WHERE titulo = ?", (selected_podcast,))
                     conn.commit()
                     st.success("Podcast eliminado exitosamente.")
@@ -198,7 +205,11 @@ def manage_beyond_summit():
         st.success("Detalles del evento guardados exitosamente.")
 
 def show():
-   
+    # Protege el panel si no hay sesión admin (doble chequeo)
+    if not st.session_state.get("admin_logged_in", False):
+        st.warning("Acceso denegado. Por favor ingresa como administrador.")
+        return
+
     st.sidebar.title("Panel de Administración")
     section = st.sidebar.selectbox("Selecciona una sección", ["Gestión de Videos", "Gestión de Podcasts", "Gestión del Evento Beyond Summit"])
 

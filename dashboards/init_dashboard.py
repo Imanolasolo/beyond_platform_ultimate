@@ -37,9 +37,14 @@ def show():
     else:
         img_src = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
 
+    # Inyectar Roboto Condensed para este dashboard (por si la página no lo cargó)
+    st.markdown('''
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    ''', unsafe_allow_html=True)
+
     # Título dentro de la caja gris
     titulo_html = """
-    <span style='font-size:25px; font-weight:bold; color:#7c82ce; text-align:center; font-family:Roboto Condensed,Arial,sans-serif; margin-bottom:18px; display:block; margin-top:80px;'>¿QUÉ ES BEYOND PLATFORM?</span>
+    <span style='font-size:35px; font-weight:bold; color:#7c82ce; text-align:center; font-family:Roboto Condensed; margin-bottom:20px; display:block; margin-top:80px;'>¿QUÉ ES BEYOND PLATFORM?</span>
     """
     # Obtener los 4 videos más votados
     videos = get_top_videos(4)
@@ -60,7 +65,7 @@ def show():
     margin-bottom: 0px;
     margin-top: 24px;
     letter-spacing: 0.01em;
-    font-family: 'Roboto Condensed', Arial, sans-serif;
+    font-family: Roboto Condensed, Arial, sans-serif;
 }}
 .fullwidth-row {{
     width: 100vw;
@@ -172,8 +177,17 @@ def show():
     </div>
 </div>
 <div class="info-box-below-hero">
-    <div>{titulo_html}</div>
-    <div>
+    <div style="
+  color: #4B3C8A; 
+  line-height: 1.2; 
+  font-size: 40px; 
+  font-family: 'Roboto Condensed', Gadget, sans-serif; 
+  font-weight: 700; 
+  text-align: center;
+">
+  ¿QUÉ ES BEYOND PLATFORM?
+</div>
+    <div style="color: black; line-height: 1.2; font-size: 20px; font-family: Roboto Condensed;">
         Beyond Platform está pensada para quienes<br>
         creen que la verdadera transformación de las<br>
         sociedades nace de personas apasionadas por<br>
