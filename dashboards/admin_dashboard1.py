@@ -309,14 +309,24 @@ def show():
             submitted = st.form_submit_button("Ingresar")
             if submitted:
                 # Obtain expected password from Streamlit secrets or environment variable
+                expected_password = None
                 try:
-                    expected_password = None
-                    if hasattr(st, "secrets") and isinstance(st.secrets, dict):
-                        expected_password = st.secrets.get("admin_password")
-                    if not expected_password:
-                        expected_password = os.environ.get("ADMIN_PASSWORD")
+                    if hasattr(st, "secrets"):
+                        # Prefer .get(...) when available (works for dict-like and Secrets)
+                        try:
+                            expected_password = st.secrets.get("admin_password")
+                        except Exception:
+                            # fallback to indexing (in case .get is not present)
+                            try:
+                                expected_password = st.secrets["admin_password"]
+                            except Exception:
+                                expected_password = None
                 except Exception:
                     expected_password = None
+
+                # Environment variable fallback
+                if not expected_password:
+                    expected_password = os.environ.get("ADMIN_PASSWORD")
 
                 if expected_password is None:
                     st.error("No hay contraseña de administrador configurada. Contacta al administrador.")
